@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: zephyrdrive-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: always
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zephyrdrive-web
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/car-dealership
+      - JWT_SECRET=super_secure_zephyrdrive_jwt_secret_key_12345
+    depends_on:
+      - mongodb
+    restart: always
+
+volumes:
+  mongodb_data:
